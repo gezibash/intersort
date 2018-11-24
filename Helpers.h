@@ -8,6 +8,7 @@
 #include <set>
 #include <fstream>
 #include <chrono>
+#include <string>
 
 namespace Intersort {
 
@@ -62,25 +63,44 @@ namespace Intersort {
     }
 
     template<typename T>
-    void printContainer(T &container)
+    void serializeContainer(T &container, int &totalCollisions)
     {
         std::ofstream file("container.dat");
+        unsigned int collisions = 0;
 
+        file << "===\n\n\n";
         for(auto const & set : container)
         {
             file << "[";
             if(!set.empty())
             {
+                collisions = -1;
                 for(auto & num : set)
                 {
                     file << num << ",";
+                    collisions++;
                 }
-                file.seekp(-1,std::ios::end);
+                totalCollisions += collisions;
+                file.seekp(-1, std::ios::end);
             }
             file << "]\n";
         }
         
+        file.seekp(0, std::ios::beg);
+        file << "Collisions = " << totalCollisions << "\n";
         file.close();
+    }
+
+    template<typename T>
+    void serializeVector(std::vector<T> &numbers)
+    {
+        std::ofstream file("vector.dat");
+        for(auto const & num : numbers)
+        {
+            file << num << ",";
+        }
+        file.seekp(-1, std::ios::end);
+        file << " ";
     }
 
 }

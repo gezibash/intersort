@@ -11,6 +11,11 @@ namespace Intersort
         auto [minIndex, maxIndex] = std::minmax_element(numbers.begin(), numbers.end());
         std::iter_swap(numbers.begin(), minIndex);
         std::iter_swap(numbers.end()-1, maxIndex);
+
+        // On some special cases the min and max swap
+        // we want to make sure they are swapped back in place
+        if(*numbers.begin() > *(numbers.end()-1))
+            std::iter_swap(numbers.begin(), numbers.end() - 1);
     }
 
     template<typename T>
@@ -21,7 +26,7 @@ namespace Intersort
             i++;        
 
         double slope = double(y[i] - y[i-1]) / double(x[i] - x[i-1]);
-        return floor(slope * (xq - x[i-1]) + y[i-1]);
+        return round(slope * (xq - x[i-1]) + y[i-1]);
     }
 
     template<typename T>
@@ -37,18 +42,13 @@ namespace Intersort
     }
 
     template<typename T>
-    void sort(std::vector<T> &numbers)
+    void sort(std::vector<T> &numbers, unsigned int &collisions)
     {
         presort(numbers);
-
-        // On some special cases the min and max swap
-        // we want to make sure they are swapped back in place
-        if(*numbers.begin() > *(numbers.end()-1))
-            std::iter_swap(numbers.begin(), numbers.end() - 1);
         
         // Create interpolants
         std::vector<T>   x  = {*numbers.begin(), *(numbers.end()-1)};
-        std::vector<int> y  = {0, (int)numbers.size()};
+        std::vector<int> y  = {0, (int)numbers.size() - 1};
 
         // Create main container
         std::vector<std::multiset<T, std::less_equal<T>>> container;
@@ -65,12 +65,13 @@ namespace Intersort
             container[location].insert(num);
         }
         
+        // Refill loop
         int i = -1;
         for(auto & set : container)
             for(auto & num : set)
                 numbers[++i] = num;
 
-        printContainer(container);
+        serializeContainer(container, collisions);
     }
 }
 
