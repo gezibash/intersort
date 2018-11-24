@@ -14,18 +14,76 @@ namespace Intersort
     }
 
     template<typename T>
-    std::vector<T> interpolate(std::vector<T> x, std::vector<T> y, std::vector<T> xq)
+    int interpolate(T &xq, std::vector<T> &x, std::vector<int> &y)
     {
-        std::vector<T> yq;
-        for(auto &num : xq)
-            yq.push_back(y[0] + ((y[1] - y[0]) / (x[1] - x[0])) * (num - x[0]));
+        int i = 1;
+        while(xq > x[i])
+            i++;        
+
+        double slope = double(y[i] - y[i-1]) / double(x[i] - x[i-1]);
+        return std::round(slope * (xq - x[i-1]) + y[i-1]);
+    }
+
+    template<typename T>
+    std::vector<int> interpolate(std::vector<T> &xq, std::vector<T> &x, std::vector<int> &y)
+    {
+        std::vector<int> yq;
+        yq.reserve(xq.size());
+
+        for(auto & num : xq)
+            yq.push_back(interpolate(num, x, y));
+        
         return yq;
     }
 
     template<typename T>
     void sort(std::vector<T> &numbers)
     {
+        // We will initially presort the array
+        presort(numbers);
+
+        // On some special cases the min and max swap
+        // we want to make sure they are swapped back in place
+        if(*numbers.begin() > *(numbers.end()-1))
+            std::iter_swap(numbers.begin(), numbers.end() - 1);
         
+        // Create interpolants
+        std::vector<T>   x  = {*numbers.begin(), *(numbers.end()-1)};
+        std::vector<int> y  = {0, (int)numbers.size()};
+
+        // Create main container
+        std::vector<std::vector<T>> container;
+        container.reserve(numbers.size());
+
+        printVector(numbers);
+
+        // Main loop
+        int location;
+        for(auto & num : numbers)
+        {
+            location = interpolate(num, x, y);
+            std::cout << num << " => " << location << std::endl;
+
+            if(container[location].size() == 0) {
+                container[location].push_back(num);
+            } else {
+
+                std::cout << num << " <=> " << location << std::endl;
+                auto & tower = container[location];
+
+                printVector(tower);
+
+                int i = 0;
+
+                while(num > tower[i]) i++;
+                
+                std::cout << "will insert " << num << " at " << i << "\n";
+
+                tower.insert((tower.begin() + i), num);
+
+                printVector(tower);
+            }
+        }
     }
 }
 

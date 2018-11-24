@@ -1,14 +1,15 @@
 #include "Intersort.h"
 
+// The type of numbers to be generated
+using T = int;
+
 int main()
 {
     Intersort::printWelcomeScreen();
     
-    std::vector<int> numbers = Intersort::uniformNumbers<int>(20, 0, 100);
+    std::vector<T> numbers = Intersort::uniformNumbers<T>(20, 0, 100);
 
-    Intersort::printVector(numbers);
-    Intersort::presort(numbers);
-    Intersort::printVector(numbers);
+    Intersort::sort(numbers);
 
     return 0;
 }
