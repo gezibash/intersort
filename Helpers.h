@@ -5,6 +5,9 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <set>
+#include <fstream>
+#include <chrono>
 
 namespace Intersort {
 
@@ -50,12 +53,34 @@ namespace Intersort {
     }
 
     template<typename T>
-    void printVector(std::vector<T> numbers)
+    void printVector(std::vector<T> &numbers)
     {
         std::cout << "[";
         for(auto & num : numbers)
             std::cout << num << ",";
         std::cout << '\b' << "]" << '\n';
+    }
+
+    template<typename T>
+    void printContainer(T &container)
+    {
+        std::ofstream file("container.dat");
+
+        for(auto const & set : container)
+        {
+            file << "[";
+            if(!set.empty())
+            {
+                for(auto & num : set)
+                {
+                    file << num << ",";
+                }
+                file.seekp(-1,std::ios::end);
+            }
+            file << "]\n";
+        }
+        
+        file.close();
     }
 
 }
