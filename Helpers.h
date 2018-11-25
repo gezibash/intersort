@@ -63,7 +63,7 @@ namespace Intersort {
     }
 
     template<typename T>
-    void serializeContainer(T &container, int &totalCollisions)
+    void serializeContainer(T &container, unsigned int &totalCollisions)
     {
         std::ofstream file("container.dat");
         unsigned int collisions = 0;
