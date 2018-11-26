@@ -26,7 +26,7 @@ namespace Intersort {
     }
 
     template<typename T>
-    std::vector<T> uniformNumbers(int len, int low, int high)
+    std::vector<T> uniformDistribution(int len, int low, int high)
     {
         std::mt19937 randomSeed;
         randomSeed.seed(std::random_device()());
@@ -40,7 +40,7 @@ namespace Intersort {
     }
 
     template<>
-    std::vector<int> uniformNumbers(int len, int low, int high)
+    std::vector<int> uniformDistribution(int len, int low, int high)
     {
         std::mt19937 randomSeed;
         randomSeed.seed(std::random_device()());
@@ -49,6 +49,34 @@ namespace Intersort {
         std::vector<int> numbers;
         for(int i = 0; i < len; i++)
             numbers.push_back(tempDist(randomSeed));
+
+        return numbers;
+    }
+
+    template<typename T>
+    std::vector<T> exponentialDistribution(int len, T m)
+    {
+        std::mt19937 randomSeed;
+        randomSeed.seed(std::random_device()());
+        std::exponential_distribution<T> dist(m);
+
+        std::vector<T> numbers;
+        for(int i = 0; i < len; i++)
+            numbers.push_back(dist(randomSeed));
+
+        return numbers;
+    }
+
+    template<typename T>
+    std::vector<T> normalDistribution(int len, T m, T s)
+    {
+        std::mt19937 randomSeed;
+        randomSeed.seed(std::random_device()());
+        std::normal_distribution<T> normalDist(m, s);
+
+        std::vector<T> numbers;
+        for(int i = 0; i < len; i++)
+            numbers.push_back(normalDist(randomSeed));
 
         return numbers;
     }
