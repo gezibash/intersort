@@ -2,8 +2,9 @@
 #define INTERSORT_H
 
 #include "Helpers.h"
+#include "Distributions.h"
 
-// Formula to estimate collisions - f(n) = floor(0.3679*n)
+// Formula to estimate collisions - f(n) = floor(n/e)
 
 namespace Intersort
 {
@@ -36,10 +37,18 @@ namespace Intersort
         unsigned int count = indices.size();
         for(int i = 2; i < count; i++)
         {   
+            indices.push_back(floor(length/2) + indices[i]);
+        }
+        
+        count = indices.size();
+        for(int i = 2; i < count; i++)
+        {   
             indices.push_back(length - indices[i]);
         }
 
         std::sort(indices.begin(), indices.end());
+
+        indices.erase(std::unique(indices.begin(), indices.end()), indices.end());
 
         indices.push_back(length - 1);
 
